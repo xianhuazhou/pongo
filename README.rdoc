@@ -1,0 +1,36 @@
+== Introduction
+A simple ORM class for MongoDB
+
+== Usage:
+    <?php
+        require '/path/to/pongo/lib/pongo.php';
+        pongo\Pongo::initializeConnection('mongodb://localhost:27017', 'dbname');
+
+       class User extends pongo\Pongo {
+            protected static $FIELDS = array('_id', 'name', 'age');
+            protected static $TABLE = 'users';
+        }   
+
+        $user = new User(array(
+            '_id'  => 1,
+            'name' => 'User A', 
+            'age' => 10
+        )); 
+        $user->save();
+
+        // find one
+        $u = User::findOne(array('name' => 'User A'));
+        print_r($u);
+
+        // find all
+        $users = User::find(array(
+            'conditions' => array('name' => 'User A'),
+            'limit' => 1
+        ));
+        print_r($users);
+
+        $u->remove();
+
+        // drop the collection
+        User::drop();
+    ?> 
