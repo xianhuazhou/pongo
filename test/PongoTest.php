@@ -155,6 +155,34 @@ class PongoTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(1, count($results));
     }
 
+    public function testGroup()
+    {
+        $users = array(
+           array('name' => 'User 5', 'age' => 22),
+           array('name' => 'User 2', 'age' => 10),
+           array('name' => 'User 3', 'age' => 10),
+           array('name' => 'User 4', 'age' => 21),
+           array('name' => 'User 1', 'age' => 10),
+        );
+        User::collection()->batchInsert($users);
+
+        $keys = array('age' => 1);
+        $initial = array('total' => 0);
+        $reduce = 'function (obj, prev){ prev.total += 1; }';
+        $results = User::group($keys, $initial, $reduce);
+
+        $this->assertEquals(3, count($results));
+
+        foreach ($results as $result) {
+            if ($result['age'] == 10) {
+                $this->assertEquals(3, $result['total']);
+            }
+            if ($result['age'] == 21) {
+                $this->assertEquals(1, $result['total']);
+            }
+        }
+    }
+
     public function testCollection() 
     {
         $this->assertTrue(User::collection() instanceof \MongoCollection);

@@ -182,6 +182,22 @@ class Pongo {
     }
 
     /**
+     * group function
+     *
+     * @param array $keys
+     * @param array $initial
+     * @param string|MongoCode $reduce
+     * @param array $options
+     *
+     * @return array
+     */
+    public static function group(Array $keys, Array $initial, $reduce, Array $options = array()) 
+    {
+        $results = self::collection()->group($keys, $initial, $reduce, $options);
+        return $results['retval'];
+    }
+
+    /**
      * find items 
      *
      * @param array $conditions
