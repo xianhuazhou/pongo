@@ -186,15 +186,28 @@ class Pongo {
      *
      * @param array $keys
      * @param array $initial
-     * @param string|MongoCode $reduce
+     * @param string|mongocode $reduce
      * @param array $options
      *
      * @return array
      */
-    public static function group(Array $keys, Array $initial, $reduce, Array $options = array()) 
+    public static function group(array $keys, array $initial, $reduce, array $options = array()) 
     {
         $results = self::collection()->group($keys, $initial, $reduce, $options);
         return $results['retval'];
+    }
+
+    /**
+     * run command 
+     *
+     * @param string $command
+     * @param array $options
+     *
+     * @return array 
+     */
+    public static function command($command, Array $options = Array()) 
+    {
+        return self::DB()->command($command, $options);
     }
 
     /**
@@ -254,6 +267,18 @@ class Pongo {
         }
 
         return $objects;
+    }
+
+    /**
+     * convert the results of MongoCursor to Array 
+     *
+     * @param MongoCursor $mongoCursor
+     *
+     * @return array
+     */
+    public static function asArray(\MongoCursor $mongoCursor)
+    {
+        return iterator_to_array($mongoCursor);
     }
 
     /**

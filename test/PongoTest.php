@@ -152,7 +152,39 @@ class PongoTest extends \PHPUnit_Framework_TestCase {
         $this->assertTrue(User::mongoFind() instanceof \MongoCursor);
 
         $results = User::asObjects(User::mongoFind(array('age' => 20))->limit(1));
-        $this->assertEquals(1, count($results));
+        $this->assertEquals(1, count($results)); 
+    }
+
+    public function testCommand()
+    {
+        $users = array(
+           array('name' => 'User 1', 'age' => 10),
+           array('name' => 'User 2', 'age' => 20),
+           array('name' => 'User 3', 'age' => 30),
+        );
+        User::collection()->batchInsert($users);
+
+        $result = User::command(array(
+            'mapreduce' => 'users',
+            'map' => new \MongoCode('function(){ emit(this.age, 1); }'),
+            'reduce' => new \MongoCode('function(key, values){ return values.length; }'),
+            'out' => 'result'
+        ));
+        $result = User::DB()->selectCollection($result['result'])->find();
+        $this->assertTrue($result instanceof \MongoCursor);
+    }
+
+    public function testAsArray()
+    {
+        $users = array(
+           array('name' => 'User 1', 'age' => 10),
+           array('name' => 'User 2', 'age' => 20),
+           array('name' => 'User 3', 'age' => 30),
+        );
+        User::collection()->batchInsert($users);
+        $results = User::asArray(User::mongoFind());
+
+        $this->assertEquals(3, count($results));
     }
 
     public function testGroup()
