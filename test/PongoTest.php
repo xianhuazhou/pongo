@@ -159,4 +159,9 @@ class PongoTest extends \PHPUnit_Framework_TestCase {
     {
         $this->assertTrue(User::collection() instanceof \MongoCollection);
     }
+
+    public function testDB() 
+    {
+        $this->assertTrue(User::DB() instanceof \MongoDB);
+    }
 }

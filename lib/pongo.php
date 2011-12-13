@@ -128,6 +128,17 @@ class Pongo {
      *
      * @return MongoCollection
      */
+    public static function DB()
+    {
+        self::collection();
+        return self::$mongoDB;
+    }
+
+    /**
+     * get mongoCollection of the caller
+     *
+     * @return MongoCollection
+     */
     public static function collection()
     {
         if (isset(self::$collections[static::$TABLE]) && 
